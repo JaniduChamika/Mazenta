@@ -1,0 +1,675 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
+ */
+package gui;
+
+import java.awt.Image;
+import java.sql.ResultSet;
+import java.util.Vector;
+import java.util.regex.Pattern;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import model.MySQL;
+
+/**
+ *
+ * @author ROG STRIX
+ */
+public class CompanyBranch extends javax.swing.JDialog {
+
+    Phamarcy p;
+    Supplier s;
+    Icon successIcon = new ImageIcon("src/resourse/icon/success.png");
+
+    /**
+     * Creates new form CompanyBranch
+     */
+    public CompanyBranch(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
+        initComponents();
+        loadCompanyBranch();
+        
+        ImageIcon i = new ImageIcon("src/resourse/image/3.png");
+        Image x = i.getImage();
+        setIconImage(x);
+    }
+
+    public CompanyBranch(Phamarcy parent, boolean modal, Supplier s) {
+        super(parent, modal);
+        initComponents();
+        loadCompanyBranch();
+        this.p = parent;
+        this.s = s;
+        loadCity();
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        for (int i = 0; i < 5; i++) {
+            jTable1.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+
+        }
+        Listner();
+        
+        ImageIcon i = new ImageIcon("src/resourse/image/3.png");
+        Image x = i.getImage();
+        setIconImage(x);
+    }
+
+    private void Listner() {
+        ListSelectionListener lsl = new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                int r = jTable1.getSelectedRow();
+                if (r != -1) {
+                    jName.setText(jTable1.getValueAt(r, 1).toString());
+                    jLabel14.setText(jTable1.getValueAt(r, 2).toString());
+                    jPhone.setText(jTable1.getValueAt(r, 3).toString());
+                    String address = jTable1.getValueAt(r, 4).toString();
+                    String[] ad = address.split(", ");
+                    jLine1.setText(ad[0]);
+                    jLine2.setText(ad[1]);
+                    jCity.setSelectedItem(ad[2]);
+                    jButton2.setEnabled(false);
+                    jButton4.setEnabled(true);
+                    jButton3.setEnabled(false);
+
+                }
+            }
+        };
+        jTable1.getSelectionModel().addListSelectionListener(lsl);
+    }
+
+    private void loadCity() {
+        try {
+            ResultSet rs = MySQL.search("SELECT * FROM `city` ORDER BY `name` ASC");
+
+            Vector v = new Vector();
+            v.add("Select");
+
+            while (rs.next()) {
+                v.add(rs.getString("name"));
+            }
+
+            jCity.setModel(new DefaultComboBoxModel(v));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadCompanyBranch() {
+        try {
+            ResultSet rs = MySQL.search("SELECT * FROM `company_branch` INNER JOIN `company_address` ON `company_branch`.`company_address_id`=`company_address`.`id` INNER JOIN `company` ON `company_branch`.`company_id`=`company`.`id` INNER JOIN `city` ON `company_address`.`city_id`=`city`.`id` ");
+            DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
+            dtm.setRowCount(0);
+
+            while (rs.next()) {
+                Vector v = new Vector();
+
+                v.add(rs.getString("company_branch.id"));
+                v.add(rs.getString("company_branch.name"));
+                v.add(rs.getString("company.name"));
+                v.add(rs.getString("phone_no"));
+                v.add(rs.getString("line1") + ", " + rs.getString("line2") + ", " + rs.getString("city.name"));
+
+                dtm.addRow(v);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void resetField() {
+        jName.setText("");
+        jPhone.setText("");
+        jLine1.setText("");
+        jLine2.setText("");
+        jCompanyId.setText("None");
+        jCity.setSelectedIndex(0);
+        jLabel14.setText("None");
+        jButton2.setEnabled(true);
+        jButton4.setEnabled(false);
+        jButton3.setEnabled(true);
+        jTable1.clearSelection();
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane10 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jPanel7 = new javax.swing.JPanel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        jName = new javax.swing.JTextField();
+        jButton2 = new javax.swing.JButton();
+        jPhone = new javax.swing.JTextField();
+        jButton3 = new javax.swing.JButton();
+        jLabel14 = new javax.swing.JLabel();
+        jCompanyId = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jLine1 = new javax.swing.JTextField();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        jLine2 = new javax.swing.JTextField();
+        jCity = new javax.swing.JComboBox<>();
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Company Branch");
+        setResizable(false);
+
+        jTable1.setFont(new java.awt.Font("Arial Nova", 0, 14)); // NOI18N
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "Branch", "Company", "Phone No", "Address"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTable1.setGridColor(new java.awt.Color(204, 204, 204));
+        jTable1.setMinimumSize(new java.awt.Dimension(120, 0));
+        jTable1.setShowGrid(false);
+        jTable1.setShowHorizontalLines(true);
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
+        jScrollPane10.setViewportView(jTable1);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 660, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Branch Details"));
+
+        jLabel9.setFont(new java.awt.Font("Arial Nova", 0, 14)); // NOI18N
+        jLabel9.setText("Phone No");
+
+        jLabel10.setFont(new java.awt.Font("Arial Nova", 0, 14)); // NOI18N
+        jLabel10.setText("Company Name");
+
+        jLabel13.setFont(new java.awt.Font("Arial Nova", 0, 14)); // NOI18N
+        jLabel13.setText("Name");
+
+        jName.setFont(new java.awt.Font("Arial Nova", 0, 14)); // NOI18N
+        jName.setToolTipText("");
+
+        jButton2.setFont(new java.awt.Font("Arial Nova", 0, 14)); // NOI18N
+        jButton2.setForeground(new java.awt.Color(51, 51, 51));
+        jButton2.setText("Register");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jPhone.setFont(new java.awt.Font("Arial Nova", 0, 14)); // NOI18N
+        jPhone.setToolTipText("");
+        jPhone.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jPhoneKeyTyped(evt);
+            }
+        });
+
+        jButton3.setFont(new java.awt.Font("Arial Nova", 0, 14)); // NOI18N
+        jButton3.setForeground(new java.awt.Color(51, 51, 51));
+        jButton3.setText("Select Company");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        jLabel14.setFont(new java.awt.Font("Arial Nova", 0, 14)); // NOI18N
+        jLabel14.setText("None");
+
+        jCompanyId.setFont(new java.awt.Font("Arial Nova", 0, 14)); // NOI18N
+        jCompanyId.setText("None");
+
+        jLabel18.setFont(new java.awt.Font("Arial Nova", 0, 14)); // NOI18N
+        jLabel18.setText("Company ID");
+
+        jLabel11.setFont(new java.awt.Font("Arial Nova", 0, 14)); // NOI18N
+        jLabel11.setText("Address line 1");
+
+        jLine1.setFont(new java.awt.Font("Arial Nova", 0, 14)); // NOI18N
+        jLine1.setToolTipText("");
+        jLine1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jLine1KeyReleased(evt);
+            }
+        });
+
+        jLabel12.setFont(new java.awt.Font("Arial Nova", 0, 14)); // NOI18N
+        jLabel12.setText("Address line 2");
+
+        jLabel15.setFont(new java.awt.Font("Arial Nova", 0, 14)); // NOI18N
+        jLabel15.setText("City");
+
+        jLine2.setFont(new java.awt.Font("Arial Nova", 0, 14)); // NOI18N
+        jLine2.setToolTipText("");
+        jLine2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jLine2KeyReleased(evt);
+            }
+        });
+
+        jCity.setFont(new java.awt.Font("Arial Nova", 0, 14)); // NOI18N
+
+        jButton4.setFont(new java.awt.Font("Arial Nova", 0, 14)); // NOI18N
+        jButton4.setForeground(new java.awt.Color(51, 51, 51));
+        jButton4.setText("Update");
+        jButton4.setEnabled(false);
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        jButton5.setFont(new java.awt.Font("Arial Nova", 0, 14)); // NOI18N
+        jButton5.setForeground(new java.awt.Color(51, 51, 51));
+        jButton5.setText("Clear");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel10)
+                            .addComponent(jLabel18))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jCompanyId, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addComponent(jLabel13)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jName, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
+                        .addComponent(jPhone, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLine1)
+                            .addComponent(jLine2, javax.swing.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)
+                            .addComponent(jCity, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jName, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGap(4, 4, 4)
+                        .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPhone, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLine1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLine2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jCity, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jCompanyId, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
+        );
+
+        pack();
+        setLocationRelativeTo(null);
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        String name = jName.getText();
+        String phone = jPhone.getText();
+        String line1 = jLine1.getText();
+        String line2 = jLine2.getText();
+        String companyId = jCompanyId.getText();
+        String city = jCity.getSelectedItem().toString();
+        if (name.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter branch name", "Warning", JOptionPane.WARNING_MESSAGE);
+
+        } else if (phone.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter branch phone number", "Warning", JOptionPane.WARNING_MESSAGE);
+
+        } else if (!Pattern.compile("0[7,3,2,1][1-9][0-9]{7}").matcher(phone).matches()) {
+            JOptionPane.showMessageDialog(this, "Invalid phone number", "Warning", JOptionPane.WARNING_MESSAGE);
+        } else if (line1.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter address line 1", "Warning", JOptionPane.WARNING_MESSAGE);
+
+        } else if (line2.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter address line 2", "Warning", JOptionPane.WARNING_MESSAGE);
+
+        } else if (city.equals("Select")) {
+            JOptionPane.showMessageDialog(this, "Please select city", "Warning", JOptionPane.WARNING_MESSAGE);
+
+        } else if (companyId.equals("None")) {
+            JOptionPane.showMessageDialog(this, "Please select company", "Warning", JOptionPane.WARNING_MESSAGE);
+
+        } else {
+            try {
+                ResultSet rs = MySQL.search("SELECT * FROM `city` WHERE `name`='" + city + "'");
+                rs.next();
+                String cityId = rs.getString("id");
+                ResultSet rs3 = MySQL.search("SELECT * FROM `company_address` WHERE `line1`='" + line1 + "' AND `line2`='" + line2 + "' AND `city_id`='" + cityId + "'");
+                String addressId;
+
+                if (rs3.next()) {
+                    addressId = rs3.getString("id");
+
+                } else {
+                    MySQL.iud("INSERT INTO `company_address` (`line1`,`line2`,`city_id`) VALUES ('" + line1 + "','" + line2 + "','" + cityId + "')");
+                    ResultSet rs2 = MySQL.search("SELECT * FROM `company_address` WHERE `line1`='" + line1 + "' AND `line2`='" + line2 + "' AND `city_id`='" + cityId + "'");
+                    rs2.next();
+                    addressId = rs2.getString("id");
+                }
+                ResultSet rs4 = MySQL.search("SELECT * FROM `company_branch` WHERE `name`='" + name + "' AND `company_id`='" + companyId + "' AND `company_address_id`='" + addressId + "' AND `phone_no`='" + phone + "'");
+
+                if (rs4.next()) {
+                    JOptionPane.showMessageDialog(this, "Already exists", "Warning", JOptionPane.WARNING_MESSAGE);
+
+                } else {
+                    MySQL.iud("INSERT INTO `company_branch` (`name`,`company_id`,`company_address_id`,`phone_no`) VALUES ('" + name + "','" + companyId + "','" + addressId + "','" + phone + "')");
+                    JOptionPane.showMessageDialog(this, "New branch registered success", "Success", JOptionPane.INFORMATION_MESSAGE,successIcon);
+
+                }
+                resetField();
+                loadCompanyBranch();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        Company c = new Company(this.p, true, this);
+        c.setVisible(true);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jLine1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jLine1KeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jLine1KeyReleased
+
+    private void jLine2KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jLine2KeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jLine2KeyReleased
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        if (evt.getClickCount() == 2) {
+            int r = jTable1.getSelectedRow();
+            if (r != -1) {
+                this.s.jBranchId.setText(jTable1.getValueAt(r, 0).toString());
+                this.s.jLabel14.setText(jTable1.getValueAt(r, 1).toString());
+                this.s.jLabel15.setText(jTable1.getValueAt(r, 3).toString());
+                this.s.jLabel16.setText(jTable1.getValueAt(r, 4).toString());
+                this.dispose();
+            }
+        }
+    }//GEN-LAST:event_jTable1MouseClicked
+
+    private void jPhoneKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPhoneKeyTyped
+        String t = String.valueOf(evt.getKeyChar());
+        String old = jPhone.getText();
+        String newtext = old + "" + t;
+        if (newtext.length() == 1) {
+            if (!Pattern.compile("0").matcher(newtext).matches()) {
+                evt.consume();
+
+            }
+
+        } else if (newtext.length() == 2) {
+            if (!Pattern.compile("0[7,3,2,1]").matcher(newtext).matches()) {
+                evt.consume();
+
+            }
+
+        } else if (newtext.length() == 3) {
+            if (!Pattern.compile("0[7,3,2,1][1-9]").matcher(newtext).matches()) {
+                evt.consume();
+
+            }
+
+        } else if (newtext.length() <= 10) {
+            if (!Pattern.compile("0[7,3,2,1][1-9][0-9]+").matcher(newtext).matches()) {
+                evt.consume();
+
+            }
+
+        } else {
+            evt.consume();
+        }
+    }//GEN-LAST:event_jPhoneKeyTyped
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        String name = jName.getText();
+        String phone = jPhone.getText();
+        String line1 = jLine1.getText();
+        String line2 = jLine2.getText();
+        String branchId = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
+
+        String city = jCity.getSelectedItem().toString();
+        if (name.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter branch name", "Warning", JOptionPane.WARNING_MESSAGE);
+
+        } else if (phone.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter branch phone number", "Warning", JOptionPane.WARNING_MESSAGE);
+
+        } else if (!Pattern.compile("0[7,3,2,1][1-9][0-9]{7}").matcher(phone).matches()) {
+            JOptionPane.showMessageDialog(this, "Invalid phone number", "Warning", JOptionPane.WARNING_MESSAGE);
+        } else if (line1.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter address line 1", "Warning", JOptionPane.WARNING_MESSAGE);
+
+        } else if (line2.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter address line 2", "Warning", JOptionPane.WARNING_MESSAGE);
+
+        } else if (city.equals("Select")) {
+            JOptionPane.showMessageDialog(this, "Please select city", "Warning", JOptionPane.WARNING_MESSAGE);
+
+        } else {
+            try {
+                ResultSet rs = MySQL.search("SELECT * FROM `city` WHERE `name`='" + city + "'");
+                rs.next();
+                String cityId = rs.getString("id");
+                ResultSet rs3 = MySQL.search("SELECT * FROM `company_address` WHERE `line1`='" + line1 + "' AND `line2`='" + line2 + "' AND `city_id`='" + cityId + "'");
+                String addressId;
+
+                if (rs3.next()) {
+                    addressId = rs3.getString("id");
+
+                } else {
+                    MySQL.iud("INSERT INTO `company_address` (`line1`,`line2`,`city_id`) VALUES ('" + line1 + "','" + line2 + "','" + cityId + "')");
+                    ResultSet rs2 = MySQL.search("SELECT * FROM `company_address` WHERE `line1`='" + line1 + "' AND `line2`='" + line2 + "' AND `city_id`='" + cityId + "'");
+                    rs2.next();
+                    addressId = rs2.getString("id");
+                }
+
+                MySQL.iud("UPDATE `company_branch` SET `name`='" + name + "',`company_address_id`='" + addressId + "',`phone_no`='" + phone + "' WHERE  `id`='" + branchId + "'");
+                resetField();
+                loadCompanyBranch();
+                s.loadSupplier();
+                JOptionPane.showMessageDialog(this, "Branch updated success", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        resetField();
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(CompanyBranch.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(CompanyBranch.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(CompanyBranch.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(CompanyBranch.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the dialog */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                CompanyBranch dialog = new CompanyBranch(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JComboBox<String> jCity;
+    public javax.swing.JLabel jCompanyId;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    public javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JTextField jLine1;
+    private javax.swing.JTextField jLine2;
+    private javax.swing.JTextField jName;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JTextField jPhone;
+    private javax.swing.JScrollPane jScrollPane10;
+    private javax.swing.JTable jTable1;
+    // End of variables declaration//GEN-END:variables
+}
